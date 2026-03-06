@@ -1,0 +1,4 @@
+# Local env (API keys) — do not commit
+.env
+.env.local
+*.env
