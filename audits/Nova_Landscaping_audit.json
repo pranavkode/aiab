@@ -1,0 +1,68 @@
+{
+  "audit": {
+    "problems": [
+      "Headline doesn't explain what makes Nova Landscaping different.",
+      "CTA 'Contact us' is buried below the fold.",
+      "Mobile layout feels heavy with dense body text."
+    ],
+    "money_impact": [
+      "Lower conversion on first visit due to unclear messaging.",
+      "Fewer leads generated because the CTA is not immediately visible.",
+      "Engagement loss from potential customers overwhelmed by text."
+    ]
+  },
+  "redesign": {
+    "headline": "Transform Your Outdoor Space with Nova Landscaping!",
+    "subheadline": "Expert landscaping solutions tailored to your needs in Herndon.",
+    "cta": "Get Your Free Estimate",
+    "services": [
+      {
+        "title": "Landscape Design",
+        "text": "Bespoke designs that enhance your property's beauty."
+      },
+      {
+        "title": "Hardscaping",
+        "text": "Durable patios, walkways, and retaining walls."
+      },
+      {
+        "title": "Lawn Care",
+        "text": "Comprehensive maintenance for lush green lawns."
+      },
+      {
+        "title": "Tree & Shrub Care",
+        "text": "Expert pruning and health assessments for your plants."
+      },
+      {
+        "title": "Irrigation Systems",
+        "text": "Efficient watering solutions for hassle-free maintenance."
+      }
+    ],
+    "trust_bar": [
+      "Licensed & Insured",
+      "Free Same-Day Estimates",
+      "20+ Years Experience"
+    ],
+    "testimonial": "Reliable service, stunning results, and professional care every time.",
+    "google_reviews": {
+      "rating": "4.8",
+      "count": "112",
+      "reviews": [
+        {
+          "quote": "The team at Nova Landscaping transformed my backyard beautifully!",
+          "author": "Emily R.",
+          "location": "Herndon"
+        },
+        {
+          "quote": "Quick, professional, and very friendly. Highly recommend!",
+          "author": "John L.",
+          "location": "Reston"
+        },
+        {
+          "quote": "Transformative landscaping with great attention to detail.",
+          "author": "Samantha K.",
+          "location": "Vienna"
+        }
+      ]
+    }
+  }
+}

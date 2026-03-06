@@ -1,6 +1,6 @@
 """
-Send generated outreach emails to leads. Marks leads as contacted and sets contacted_at.
-Uses a delay between emails (~80/hour) to reduce spam risk.
+Send generated outreach emails to leads. Embeds after screenshot as inline image (no attachments) for better deliverability.
+Marks leads as contacted and sets contacted_at. Uses a delay between emails (~80/hour).
 """
 from dotenv import load_dotenv
 load_dotenv()
@@ -10,13 +10,16 @@ import time
 import smtplib
 import pandas as pd
 from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.image import MIMEImage
 from datetime import datetime, timezone
 
 EMAIL = os.getenv("OUTREACH_EMAIL")
 PASSWORD = os.getenv("OUTREACH_PASSWORD")
-# Cap emails per run (default 10). Set MAX_EMAILS_PER_RUN in .env to change; 0 = no limit.
 _max = os.getenv("MAX_EMAILS_PER_RUN", "10").strip()
 MAX_EMAILS_PER_RUN = int(_max) if _max and _max != "0" else None
+
+SCREENSHOTS_DIR = "screenshots"
 
 if not EMAIL or not PASSWORD:
     print("Set OUTREACH_EMAIL and OUTREACH_PASSWORD in .env (use Gmail App Password if 2FA is on).")
@@ -30,6 +33,7 @@ for col in ("contacted", "replied", "converted"):
         leads[col] = 0
 if "contacted_at" not in leads.columns:
     leads["contacted_at"] = ""
+leads["contacted_at"] = leads["contacted_at"].fillna("").astype(str)
 
 leads["contacted"] = leads["contacted"].fillna(0).astype(int)
 
@@ -50,28 +54,47 @@ for index, row in leads.iterrows():
     if row["contacted"]:
         continue
 
-    filename = f"email_{business.replace(' ', '_')}.txt"
-    if not os.path.exists(filename):
+    slug = business.replace(" ", "_").replace("/", "-")
+    filename_email = f"email_{slug}.txt"
+    if not os.path.exists(filename_email):
         continue
 
-    with open(filename) as f:
-        message = f.read()
+    with open(filename_email) as f:
+        message_body = f.read()
 
-    msg = MIMEText(message)
-    msg["Subject"] = f"Quick idea for {business}'s site"
-    msg["From"] = EMAIL
-    msg["To"] = to_email
+    path_after = os.path.join(SCREENSHOTS_DIR, f"{slug}_after.png")
+    has_after = os.path.isfile(path_after)
+
+    if has_after and "[AFTER_IMAGE]" in message_body:
+        # Send HTML with inline after image (CID) — no attachments for better deliverability
+        msg = MIMEMultipart("related")
+        msg["Subject"] = f"Quick idea for {business}'s site"
+        msg["From"] = EMAIL
+        msg["To"] = to_email
+        body_plain = message_body.replace("[AFTER_IMAGE]", "[See redesign screenshot in email.]")
+        html_body = message_body.replace("\n", "<br>\n").replace("[AFTER_IMAGE]", '<br><img src="cid:afterimg" alt="Redesign mockup" style="max-width:100%; border-radius:8px;"><br>')
+        msg.attach(MIMEText(html_body, "html"))
+        with open(path_after, "rb") as fp:
+            img = MIMEImage(fp.read(), _subtype="png")
+            img.add_header("Content-Disposition", "inline", filename="after.png")
+            img.add_header("Content-ID", "<afterimg>")
+            msg.attach(img)
+    else:
+        msg = MIMEText(message_body)
+        msg["Subject"] = f"Quick idea for {business}'s site"
+        msg["From"] = EMAIL
+        msg["To"] = to_email
 
     try:
         server.sendmail(EMAIL, to_email, msg.as_string())
         leads.at[index, "contacted"] = 1
         leads.at[index, "contacted_at"] = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         sent += 1
-        print(f"Sent to {business} ({to_email})")
+        inline = " (inline after image)" if has_after else ""
+        print(f"Sent to {business} ({to_email}){inline}")
     except Exception as e:
         print(f"Failed {business}: {e}")
 
-    # Safer rate: ~80 emails per hour to avoid blocks
     time.sleep(45)
 
 leads.to_csv(leads_file, index=False)

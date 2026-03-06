@@ -1,12 +1,20 @@
-Subject: Quick Website Redesign Demo for Nova Landscaping
 
-Hi [Name],
+Hi Nova Landscaping,
 
-I hope this message finds you well! I recently took a look at Nova Landscaping’s website and created a quick demo redesign that I’d love to share with you. You can check it out here: [Demo Link](https://pranavkode.github.io/aiab/demos/Nova_Landscaping_demo.html). 
+I ran a quick review of your homepage and noticed a few things
+that might be costing quote requests:
 
-Let me know your thoughts!
+• Headline doesn't explain what makes Nova Landscaping different.
+• CTA 'Contact us' is buried below the fold.
+• Mobile layout feels heavy with dense body text.
 
-Best,  
-[Your Name]  
-[Your Position]  
-[Your Contact Information]  
+I mocked up what a cleaner version of your homepage could look like.
+
+[AFTER_IMAGE]
+
+Happy to walk through it if helpful.
+
+Book a quick call: https://calendly.com/siterenovate
+
+Pranav
+SiteRenovate

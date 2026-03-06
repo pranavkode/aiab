@@ -1,54 +1,100 @@
-
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Fairfax Roofing</title>
 <style>
-body { font-family: Arial; margin:40px; }
-h1 { color:#1a73e8; }
-.section { margin-bottom:30px; }
-button { padding:12px 20px; background:#1a73e8; color:white; border:none; }
+*{box-sizing:border-box}
+body{margin:0;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:#1a1a1a;line-height:1.5}
+.nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.98);border-bottom:1px solid #eee;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.nav-brand{font-weight:700;font-size:1.25rem;color:#1a73e8}
+.nav-brand img{max-height:40px;width:auto;display:block;vertical-align:middle}
+.nav-phone{font-weight:600;color:#1a73e8;text-decoration:none;font-size:1rem}
+.nav-phone:hover{text-decoration:underline}
+.nav-links{display:flex;gap:24px;align-items:center}
+.nav-links a{color:#444;text-decoration:none;font-size:0.95rem}
+.hero{color:#fff;padding:80px 24px;text-align:center;min-height:420px;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.hero h1{margin:0 0 12px;font-size:2.5rem;font-weight:700;letter-spacing:-0.02em;text-shadow:0 1px 3px rgba(0,0,0,.2)}
+.hero .sub{margin:0 0 24px;font-size:1.2rem;opacity:.98;max-width:560px;margin-left:auto;margin-right:auto;text-shadow:0 1px 2px rgba(0,0,0,.15)}
+.hero-actions{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;align-items:center}
+.hero .cta{display:inline-block;padding:16px 36px;background:#1a73e8;color:#fff;font-weight:700;text-decoration:none;border-radius:8px;font-size:1.1rem;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.hero .cta:hover{background:#ffca28;transform:translateY(-1px)}
+.hero .call-now{display:inline-block;padding:16px 28px;background:rgba(255,255,255,.2);color:#fff;font-weight:600;text-decoration:none;border-radius:8px;font-size:1.05rem;border:2px solid #fff}
+.hero .call-now:hover{background:rgba(255,255,255,.3)}
+.trust{background:#fff;padding:20px 24px;border-bottom:1px solid #eee;text-align:center}
+.trust-rating{font-size:1.1rem;font-weight:600;color:#1a1a1a;margin:0 0 12px;letter-spacing:.02em}
+.trust-rating span{color:#f5a623}
+.trust .badges{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.trust .badge{display:inline-block;padding:10px 20px;background:#f0f7ff;border:1px solid #1a73e8;border-radius:24px;font-size:0.9rem;color:#1a73e8;font-weight:500}
+.container{max-width:1000px;margin:0 auto;padding:48px 24px}
+.section-title{font-size:1.5rem;color:#1a73e8;margin:0 0 24px;font-weight:600}
+.services{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;margin-bottom:48px}
+.card{background:#fff;border:1px solid #eee;border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.06)}
+.card-img{height:140px;background:#e3f2fd center/cover no-repeat}
+.card-img-placeholder{background:#e3f2fd!important}
+.card-body{padding:24px}
+.card h3{margin:0 0 8px;font-size:1.1rem;color:#1a73e8}
+.card p{margin:0;font-size:0.95rem;color:#555}
+.projects{margin-bottom:48px}
+.project-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
+.project-item{text-align:center}
+.project-img{height:180px;background:#e3f2fd center/cover no-repeat;border-radius:12px}
+.project-img-placeholder{background:#e3f2fd!important}
+.project-caption{margin:8px 0 0;font-size:0.9rem;color:#555;font-weight:500}
+.testimonial{background:#fff;border:2px solid #1a73e8;border-radius:12px;padding:32px;margin-bottom:24px;box-shadow:0 4px 12px rgba(26,115,232,.12)}
+.testimonial p{margin:0;font-size:1.05rem;color:#333;font-style:italic}
+.google-reviews-section{margin-bottom:48px}
+.google-reviews{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;margin-top:16px}
+.google-review-card{background:#f8f9fa;border:1px solid #eee;border-radius:12px;padding:24px;border-left:4px solid #1a73e8}
+.review-quote{margin:0 0 12px;font-size:1rem;color:#333;font-style:italic}
+.review-author{margin:0;font-size:0.9rem;color:#666}
+.google-reviews-section .stars{color:#f5a623;margin-right:8px}
+.reviews-title{font-size:1.5rem;color:#1a73e8;margin:0 0 16px;font-weight:600}
+.reviews-title span{color:#f5a623}
+.estimate-bar{background:#1a73e8;color:#fff;padding:20px 24px;text-align:center;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:16px}
+.estimate-bar-text{margin:0;font-size:1.1rem;font-weight:500}
+.estimate-bar-btn{display:inline-block;padding:12px 24px;background:#1a73e8;color:#fff;font-weight:700;text-decoration:none;border-radius:8px;font-size:1rem}
+.cta-block{text-align:center;padding:48px 24px}
+.cta-block .btn{display:inline-block;padding:18px 40px;background:#1a73e8;color:#fff;font-weight:700;text-decoration:none;border-radius:8px;font-size:1.1rem;box-shadow:0 4px 14px rgba(0,0,0,.15)}
+.cta-block .btn:hover{background:#ffca28}
+.contact-block{background:#f8f9fa;padding:20px 24px;border-radius:8px;margin:24px 0}
+.contact-block p{margin:8px 0}
+footer{text-align:center;padding:24px;color:#888;font-size:0.9rem;border-top:1px solid #eee}
 </style>
 </head>
-
 <body>
-
-<h1>Fairfax Roofing</h1>
-
-<div class="section">
-**Headline: Your Trusted Roofing Experts in Fairfax**<br>
-<br>
-Welcome to Fairfax Roofing, where quality craftsmanship meets unbeatable service. Whether you need roof repairs, installations, or maintenance, our dedicated team is here to protect your home with durable and reliable roofing solutions.<br>
-<br>
----<br>
-<br>
-**Our Services**<br>
-<br>
-At Fairfax Roofing, we offer a comprehensive range of services tailored to meet your roofing needs:<br>
-<br>
-- **Residential Roofing**: From shingle installations to flat roofs, our skilled technicians ensure your home is safeguarded with the best materials and workmanship.<br>
-<br>
-- **Commercial Roofing**: We provide expert roofing solutions for businesses, including roof replacement, repairs, and routine maintenance to keep your commercial property in top shape.<br>
-<br>
-- **Roof Repairs**: Torn shingles, leaks, or storm damage? Our prompt and efficient repair services will restore your roof’s integrity and protect your home.<br>
-<br>
-- **Roof Inspections & Maintenance**: Prevention is key! Our detailed inspections identify potential issues and our maintenance packages keep your roof in optimal condition to extend its life.<br>
-<br>
-- **Emergency Roofing Services**: When disaster strikes, count on our 24/7 emergency service to address urgent roofing needs and secure your property.<br>
-<br>
----<br>
-<br>
-**About Us**<br>
-<br>
-At Fairfax Roofing, we believe that a strong roof is essential for a secure home. With years of experience serving the Fairfax community, we pride ourselves on our commitment to quality, reliability, and customer satisfaction. Our skilled team is fully licensed, insured, and dedicated to delivering exceptional service tailored to your unique roofing needs. We use the latest technologies and materials to ensure that every job is completed with the utmost care and precision, guaranteeing peace of mind for you and your family.<br>
-<br>
----<br>
-<br>
-**Call to Action**<br>
-<br>
-Ready to safeguard your home with a quality roof? Contact us today for a free estimate! Our friendly team is standing by to assist you with all your roofing needs. Call us at [your phone number] or fill out our online form to schedule your consultation. Experience the Fairfax Roofing difference—where your satisfaction is our top priority!
+<nav class="nav">
+  <span class="nav-brand"><img src="https://fairfaxroofingco.com/wp-content/uploads/2022/06/RetinaLogo2.jpg" alt=""></span>
+  <div class="nav-links">
+    <a href="#services">Services</a>
+    <a href="#contact">Contact</a>
+    <a class="nav-phone" href="tel:1497422839">(149) 742-2839</a>
+  </div>
+</nav>
+<section class="hero" style="background: linear-gradient(rgba(26,115,232,.85), rgba(13,71,161,.75)), url('https://images.unsplash.com/photo-1597004454259-7c0e90c82a17?w=1200') center/cover no-repeat;">
+  <h1>Roof Problems in Fairfax?</h1>
+  <p class="sub">Fast repairs, honest inspections, and durable installations trusted by homeowners across Fairfax County.</p>
+  <div class="hero-actions"><a class="call-now" href="tel:1497422839">Call Now (149) 742-2839</a><a class="cta" href="#contact">Get Your Free Estimate</a></div>
+</section>
+<div class="estimate-bar"><p class="estimate-bar-text">Looking for Roofing in Fairfax?</p><a class="estimate-bar-btn" href="#contact">Get Your Free Estimate</a></div>
+<div class="trust">
+  <p class="trust-rating"><span>★★★★★</span> 4.9 Rated Roofing in Fairfax</p>
+  <div class="badges"><span class="badge">Licensed &amp; Insured</span><span class="badge">Free Same-Day Estimates</span><span class="badge">15+ Years Experience</span></div>
 </div>
-
-<button>Request a Free Quote</button>
-
+<div class="container">
+  <h2 class="section-title" id="services">Our Services</h2>
+  <div class="services"><div class="card"><div class="card-img" style="background-image:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800');"></div><div class="card-body"><h3>Residential Roofing</h3><p>Expert installations and repairs for your home.</p></div></div><div class="card"><div class="card-img" style="background-image:url('https://images.unsplash.com/photo-1581093588401-12c0a4fbe1c7?w=800');"></div><div class="card-body"><h3>Commercial Roofing</h3><p>Durable solutions for your business needs.</p></div></div><div class="card"><div class="card-img" style="background-image:url('https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800');"></div><div class="card-body"><h3>Roof Repair</h3><p>Quick and reliable fixes for any roofing issue.</p></div></div><div class="card"><div class="card-img card-img-placeholder"></div><div class="card-body"><h3>Storm Damage Repair</h3><p>Swift response to restore your roof after severe weather.</p></div></div><div class="card"><div class="card-img card-img-placeholder"></div><div class="card-body"><h3>Gutter Repair Service</h3><p>Keep your home safe with our gutter repairs.</p></div></div></div>
+  <h2 class="section-title">Recent Roofing Jobs in Fairfax</h2>
+  <div class="project-grid"><div class="project-item"><div class="project-img" style="background-image:url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800');"></div><p class="project-caption">Residential Roofing – Fairfax VA</p></div><div class="project-item"><div class="project-img" style="background-image:url('https://images.unsplash.com/photo-1600585154526-990dbe4eb0f3?w=800');"></div><p class="project-caption">Commercial Roofing – Fairfax VA</p></div><div class="project-item"><div class="project-img" style="background-image:url('https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800');"></div><p class="project-caption">Roof Repair – Fairfax VA</p></div></div>
+  <div class="contact-block"><p><strong>Phone</strong> (149) 742-2839</p><p><strong>Address</strong> 4000 Legato Rd Suite 1100, Fairfax, VA 22033</p></div>
+  <h2 class="reviews-title"><span>★★★★★</span> What Our Customers Say</h2>
+  <div class="testimonial"><p>"Reliable service, skilled team, and excellent craftsmanship."</p></div>
+  <div class="google-reviews-section"><h2 class="section-title"><span class="stars">★★★★★</span> 4.9 from 87 Google Reviews</h2><div class="google-reviews"><div class="google-review-card"><p class="review-quote">"Fast response and honest pricing."</p><p class="review-author">— Michael G., Fairfax</p></div><div class="google-review-card"><p class="review-quote">"Roof replaced in one day with no hassle."</p><p class="review-author">— Sarah T., Chantilly</p></div><div class="google-review-card"><p class="review-quote">"Quality work and very professional!"</p><p class="review-author">— James R., Vienna</p></div></div></div>
+  <div class="cta-block" id="contact">
+    <a class="btn" href="#contact">Get Your Free Estimate</a>
+  </div>
+</div>
+<footer>Redesign concept for Fairfax Roofing</footer>
 </body>
 </html>

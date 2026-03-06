@@ -1,0 +1,68 @@
+{
+  "audit": {
+    "problems": [
+      "Headline doesn't explain what makes Fairfax Roofing different.",
+      "The free estimate CTA is below the fold, reducing prompt engagement.",
+      "Phone number isn't visible on mobile, making immediate contact difficult."
+    ],
+    "money_impact": [
+      "Lower conversion on first visit due to vague messaging.",
+      "Fewer immediate quote requests as CTA isn't prominent.",
+      "Lost leads from potential clients unable to contact easily."
+    ]
+  },
+  "redesign": {
+    "headline": "Roof Problems in Fairfax?",
+    "subheadline": "Fast repairs, honest inspections, and durable installations trusted by homeowners across Fairfax County.",
+    "cta": "Get Your Free Estimate",
+    "services": [
+      {
+        "title": "Residential Roofing",
+        "text": "Expert installations and repairs for your home."
+      },
+      {
+        "title": "Commercial Roofing",
+        "text": "Durable solutions for your business needs."
+      },
+      {
+        "title": "Roof Repair",
+        "text": "Quick and reliable fixes for any roofing issue."
+      },
+      {
+        "title": "Storm Damage Repair",
+        "text": "Swift response to restore your roof after severe weather."
+      },
+      {
+        "title": "Gutter Repair Service",
+        "text": "Keep your home safe with our gutter repairs."
+      }
+    ],
+    "trust_bar": [
+      "Licensed & Insured",
+      "Free Same-Day Estimates",
+      "15+ Years Experience"
+    ],
+    "testimonial": "Reliable service, skilled team, and excellent craftsmanship.",
+    "google_reviews": {
+      "rating": "4.9",
+      "count": "87",
+      "reviews": [
+        {
+          "quote": "Fast response and honest pricing.",
+          "author": "Michael G.",
+          "location": "Fairfax"
+        },
+        {
+          "quote": "Roof replaced in one day with no hassle.",
+          "author": "Sarah T.",
+          "location": "Chantilly"
+        },
+        {
+          "quote": "Quality work and very professional!",
+          "author": "James R.",
+          "location": "Vienna"
+        }
+      ]
+    }
+  }
+}

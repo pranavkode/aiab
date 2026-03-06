@@ -1,0 +1,68 @@
+{
+  "audit": {
+    "problems": [
+      "Weak headline above the fold \u2013 'Why Choose Us as Your Local Primary Care Dentist?' lacks impact.",
+      "CTA button 'Contact Us' is not prominently placed, reducing visibility and urgency.",
+      "Phone number is not visible on mobile, making it difficult for potential clients to reach out."
+    ],
+    "money_impact": [
+      "Lower conversion on first visit due to non-engaging headline.",
+      "Reduced inquiries due to buried CTA.",
+      "Fewer calls from mobile users because of hidden contact information."
+    ]
+  },
+  "redesign": {
+    "headline": "Looking for a Trusted Dentist in Chantilly?",
+    "subheadline": "Comprehensive dental care for your whole family in a welcoming environment.",
+    "cta": "Schedule Your Free Consultation",
+    "services": [
+      {
+        "title": "General Dentistry",
+        "text": "Routine check-ups and preventive care for lasting oral health."
+      },
+      {
+        "title": "Cosmetic Dentistry",
+        "text": "Enhance your smile with our personalized cosmetic services."
+      },
+      {
+        "title": "Orthodontics",
+        "text": "Straighten your teeth with customized braces and aligners."
+      },
+      {
+        "title": "Pediatric Dentistry",
+        "text": "Caring dental services tailored for your children."
+      },
+      {
+        "title": "Emergency Dental Care",
+        "text": "Fast and effective treatment when you need it most."
+      }
+    ],
+    "trust_bar": [
+      "Licensed & Insured",
+      "Free Initial Consultations",
+      "Over 20 Years Experience"
+    ],
+    "testimonial": "The team at Chantilly Dental made my visit stress-free and enjoyable!",
+    "google_reviews": {
+      "rating": "4.8",
+      "count": "65",
+      "reviews": [
+        {
+          "quote": "Best dental experience I've ever had! Highly recommend.",
+          "author": "Laura K.",
+          "location": "Chantilly"
+        },
+        {
+          "quote": "Compassionate staff, excellent dental care!",
+          "author": "Eric F.",
+          "location": "Herndon"
+        },
+        {
+          "quote": "Quick and painless visit. I\u2019ll definitely be back.",
+          "author": "Jennifer M.",
+          "location": "Centreville"
+        }
+      ]
+    }
+  }
+}

@@ -1,10 +1,20 @@
-Subject: Quick Website Redesign Demo for Fairfax Roofing
 
-Hi there!
+Hi Fairfax Roofing,
 
-I hope this message finds you well! I took a moment to create a quick demo redesign of your website that I think you’ll love. You can check it out here: [Fairfax Roofing Demo](https://pranavkode.github.io/aiab/demos/Fairfax_Roofing_demo.html).
+I ran a quick review of your homepage and noticed a few things
+that might be costing quote requests:
 
-Let me know your thoughts—I’d love to hear what you think!
+• Headline doesn't explain what makes Fairfax Roofing different.
+• The free estimate CTA is below the fold, reducing prompt engagement.
+• Phone number isn't visible on mobile, making immediate contact difficult.
 
-Best,  
-[Your Name]  
+I mocked up what a cleaner version of your homepage could look like.
+
+[AFTER_IMAGE]
+
+Happy to walk through it if helpful.
+
+Book a quick call: https://calendly.com/siterenovate
+
+Pranav
+SiteRenovate

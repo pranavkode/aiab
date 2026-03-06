@@ -1,10 +1,20 @@
-Subject: Quick Website Redesign Demo for Chantilly Dental
 
-Hi there,  
+Hi Chantilly Dental,
 
-I hope this message finds you well! I took the liberty of redesigning your website and would love to share the demo with you. You can check it out here: [Chantilly Dental Demo](https://pranavkode.github.io/aiab/demos/Chantilly_Dental_demo.html).  
+I ran a quick review of your homepage and noticed a few things
+that might be costing quote requests:
 
-Let me know your thoughts!  
+• Weak headline above the fold – 'Why Choose Us as Your Local Primary Care Dentist?' lacks impact.
+• CTA button 'Contact Us' is not prominently placed, reducing visibility and urgency.
+• Phone number is not visible on mobile, making it difficult for potential clients to reach out.
 
-Best,  
-[Your Name]  
+I mocked up what a cleaner version of your homepage could look like.
+
+[AFTER_IMAGE]
+
+Happy to walk through it if helpful.
+
+Book a quick call: https://calendly.com/siterenovate
+
+Pranav
+SiteRenovate
