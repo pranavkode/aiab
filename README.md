@@ -1,95 +1,80 @@
 # AI Website Agent
 
-Fully automated pipeline: **find leads → generate demos → host demos → generate outreach → send emails**. Run on your Mac now; same setup can run 24/7 on a Mac Mini.
+Fully automated outbound pipeline: **find leads → extract emails → generate demos → host → outreach → send → follow up**. Supports both **batch mode** (cron) and **queue mode** (24/7 worker loop).
 
 ## Project layout
 
 ```
 aiab/
-├── leads.csv                  # business_name, email, website, industry, city, contacted
-├── demos/                     # *_demo.html — deployed to GitHub Pages
-├── lead_finder.py             # search → weak-site detection → append to leads.csv
-├── website_copy_generator.py  # → site_*.txt + demos/*_demo.html
-├── outreach_generator.py     # → email_*.txt (includes live demo link)
-├── email_sender.py           # send outreach emails, mark leads as contacted
-├── run_pipeline.sh           # full pipeline including send
+├── leads.csv                  # Batch mode: leads + contacted, replied, converted, contacted_at, follow_up_*
+├── jobs.csv                  # Queue mode: same fields + status (NEW_LEAD → EMAIL_FOUND → DEMO_GENERATED → EMAIL_SENT)
+├── demos/                    # *_demo.html — deployed to GitHub Pages
+├── lead_finder.py            # Batch: find weak sites (bad_score >= 2), append to leads.csv
+├── lead_worker.py            # Queue: find weak sites, append to jobs.csv as NEW_LEAD
+├── email_extractor.py        # Batch: fill missing emails from websites
+├── email_worker.py          # Queue: NEW_LEAD → extract email → EMAIL_FOUND
+├── website_copy_generator.py # Batch + shared: generate site_*.txt + demos/*_demo.html
+├── demo_worker.py            # Queue: EMAIL_FOUND → generate demo → DEMO_GENERATED
+├── outreach_generator.py     # Batch + shared: generate email_*.txt with demo link
+├── outreach_worker.py       # Queue: DEMO_GENERATED → generate + send → EMAIL_SENT
+├── email_sender.py          # Batch: send outreach, set contacted=1, contacted_at
+├── follow_up_sender.py      # Send Day 3 / Day 7 follow-ups (leads.csv)
+├── run_pipeline.sh          # Batch: full pipeline + follow-ups
+├── worker_loop.sh           # Queue: continuous loop (lead → email → demo → outreach), sleep 120s
 ├── requirements.txt
 └── README.md
 ```
 
 ## Setup
 
-### 1. Install dependencies
+- **Dependencies:** `pip3 install -r requirements.txt`
+- **.env:** `OPENAI_API_KEY`, `GITHUB_PAGES_BASE`, `OUTREACH_EMAIL`, `OUTREACH_PASSWORD`, and optionally `OUTREACH_SENDER_NAME`, `OUTREACH_SENDER_COMPANY` (see `.env.example`)
+- **GitHub Pages:** Deploy from branch `gh-pages` so demos are live at `https://USERNAME.github.io/aiab/demos/`
 
-```bash
-cd /Users/pranavkode/Documents/GitHub/aiab
-pip3 install -r requirements.txt
-```
+## Two ways to run
 
-No extra package needed for email — Python’s built-in `smtplib` is used.
+### 1. Batch mode (cron every 4 hours)
 
-### 2. Environment (.env)
-
-Copy `.env.example` to `.env` and set:
-
-- `OPENAI_API_KEY` — for copy and outreach generation.
-- `GITHUB_PAGES_BASE` — base URL for demo links (e.g. `https://YOURUSERNAME.github.io/aiab`).
-- `OUTREACH_EMAIL` — Gmail address used to send outreach.
-- `OUTREACH_PASSWORD` — Gmail App Password (required if 2FA is on; create under Google Account → Security → App passwords).
-
-### 3. GitHub Pages (one-time)
-
-1. Push branch: `git push origin main:gh-pages` (or create `gh-pages` and push).
-2. GitHub → **Settings → Pages** → Deploy from branch `gh-pages`, root.
-3. Demos: `https://YOURUSERNAME.github.io/aiab/demos/Business_Name_demo.html`
-
-### 4. Leads
-
-- **Manual:** Edit `leads.csv` — columns: `business_name,email,website,industry,city` (and optionally `contacted`).
-- **Automatic:** `lead_finder.py` searches by industry/location and appends leads with weak sites (&lt; 300 words). Many leads will have empty `email` until you add **email extraction** (see below).
-
-## Run the pipeline
-
-**Full pipeline (find → generate → deploy → outreach → send)**
+Uses `leads.csv`. Good for scheduled runs.
 
 ```bash
 ./run_pipeline.sh
 ```
 
-Order:
+Order: `lead_finder` → `email_extractor` → `website_copy_generator` → git deploy demos → `outreach_generator` → `email_sender` → `follow_up_sender`.
 
-1. `lead_finder.py` — add new leads to `leads.csv`
-2. `website_copy_generator.py` — write copy and `demos/*_demo.html`
-3. Git — add/commit/push `demos/` to `main` and `gh-pages`
-4. `outreach_generator.py` — generate emails with live demo links
-5. `email_sender.py` — send emails, mark leads as `contacted=1`
+- **Lead finding:** Bad-site score (no SSL, no viewport, no CTA words, outdated builder). Only adds when **bad_score ≥ 2**.
+- **Tracking:** `contacted`, `replied`, `converted`, `contacted_at`, `follow_up_1_sent`, `follow_up_2_sent`.
+- **Follow-ups:** Day 3 and Day 7 after first contact (from `contacted_at`).
 
-**Safety:** `email_sender.py` waits **45 seconds** between emails (~80/hour) to reduce spam/block risk.
+### 2. Queue mode (24/7 worker loop)
 
-**Output**
-
-- `leads.csv` — new leads + `contacted` updated after sends
-- `demos/*_demo.html` — live on GitHub Pages
-- `email_*.txt` — outreach text (with link); emails sent via Gmail SMTP
-
-## 24/7 loop (cron)
+Uses `jobs.csv` and status. Good for a Mac Mini running continuously.
 
 ```bash
-crontab -e
+./worker_loop.sh
 ```
 
-Add (use your path):
+Loop: `lead_worker` → `email_worker` → `demo_worker` → `outreach_worker` → sleep 120s.
 
-```
-0 */4 * * * /Users/pranavkode/Documents/GitHub/aiab/run_pipeline.sh
-```
+- **Status flow:** `NEW_LEAD` → `EMAIL_FOUND` → `DEMO_GENERATED` → `EMAIL_SENT`.
+- Only processes jobs in the right status; no duplicate work.
+- Deploy demos to GitHub Pages separately (e.g. after each run, or on a schedule) if you want live links in queue-generated emails.
 
-`chmod +x run_pipeline.sh` if needed.
+## Demo links return 404?
 
-## Next upgrade: automatic email discovery
+1. **File path** — Demos must be at `demos/Name_Demo_demo.html`. GitHub is case-sensitive; the link must match the filename exactly.
+2. **Pages branch** — GitHub → **Settings → Pages** → Source: **Deploy from branch** → Branch: **gh-pages** → Folder: **/ (root)**. If set to `main`, the push to `gh-pages` won’t be what’s served.
+3. **Delay** — After a push, Pages can take 1–2 minutes. Open `https://USERNAME.github.io/aiab/` and navigate to `demos/` to confirm files appear.
 
-Most sites don’t expose email in search results, so many leads have empty `email` and never get outreach.
+## Safety and volume
 
-**Automatic email extraction** from websites (e.g. scrape contact pages, mailto links, common patterns) can increase usable leads by roughly **5–10×** and is the next high-impact step.
+- **Send rate:** 45s delay between emails (~80/hour).
+- **Targeting:** One niche (e.g. roofers, dentists) often converts better than many industries.
+- **$1k goal:** Typically 200–500 sends, 2–5 replies, 1 close. Automation maximizes opportunities; niche + copy close deals.
 
-After that: reply tracking and pausing outreach when someone responds.
+## Next upgrades
+
+- **Reply detection** — mark `replied=1` when a reply is detected (e.g. Gmail API or manual).
+- **Better site scoring** — page speed, mobile check, SSL already in place; tune thresholds or add more signals.
+- **Real data in demos** — pull phone, address, services (and optionally images) from the lead’s site into the demo. Makes the redesign feel specific and can improve reply rates.

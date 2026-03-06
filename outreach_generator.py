@@ -6,42 +6,46 @@ import os
 import pandas as pd
 
 client = OpenAI()
-
-# Base URL for hosted demos (e.g. https://yourusername.github.io/aiab)
-# Set GITHUB_PAGES_BASE in .env so outreach emails include the live demo link.
 base_url = os.environ.get("GITHUB_PAGES_BASE", "").rstrip("/")
+sender_name = os.environ.get("OUTREACH_SENDER_NAME", "Pranav").strip()
+sender_company = os.environ.get("OUTREACH_SENDER_COMPANY", "SiteRenovate").strip()
 
-leads = pd.read_csv("leads.csv")
 
-for index, row in leads.iterrows():
+def generate_outreach_for_row(row, save_to_file=True):
+    """Generate short, human outreach email body. No placeholders. Subject is set in email_sender."""
     business = row["business_name"]
     industry = row["industry"]
     business_file = business.replace(" ", "_")
     demo_link = f"{base_url}/demos/{business_file}_demo.html" if base_url else ""
 
-    prompt = f"""
-Write a short personalized outreach email to {business}, a {industry} company.
+    prompt = f"""Write a very short outreach email BODY only (no subject line) for this scenario:
 
-Mention that you made a quick demo redesign of their website and can send it.
-"""
-    if demo_link:
-        prompt += f"""
-Include this exact demo link in the email so they can click and see the redesign:
-{demo_link}
-"""
-    prompt += """
-Keep it under 70 words and conversational.
-"""
+- You are writing to {business}, a {industry} company.
+- You made a quick redesign of their website and want to share the demo link.
+- Your name is {sender_name} and your company is {sender_company}. Use these EXACT values at the end of the email. Do NOT use [Name], [Your Name], [Your Position], or any placeholder — only real text.
+- Include this exact demo link on its own line: {demo_link}
+- Keep the whole email under 55 words. Short and conversational.
+- Structure: brief greeting, one sentence that you made a quick redesign, "You can see it here:" then the link, one short line on why it might help, "Happy to send the files if useful.", then sign with {sender_name} and {sender_company}."""
 
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}],
     )
+    message = response.choices[0].message.content.strip()
+    # Drop any line that looks like a subject line (we set subject in email_sender)
+    lines = [line for line in message.split("\n") if not line.strip().lower().startswith("subject:")]
+    message = "\n".join(lines).strip()
 
-    message = response.choices[0].message.content
+    if save_to_file:
+        filename = f"email_{business}.txt".replace(" ", "_")
+        with open(filename, "w") as f:
+            f.write(message)
+    return message
 
-    filename = f"email_{business}.txt".replace(" ", "_")
-    with open(filename, "w") as f:
-        f.write(message)
+
+leads = pd.read_csv("leads.csv")
+
+for index, row in leads.iterrows():
+    generate_outreach_for_row(row, save_to_file=True)
 
 print("Outreach emails generated.")

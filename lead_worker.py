@@ -1,13 +1,14 @@
 """
-Find businesses via search and add those with weak websites to leads.
-Uses a bad-site score (SSL, mobile, CTA, outdated builder); only adds when score >= 2.
+Queue worker: find businesses with weak sites and add to jobs.csv as NEW_LEAD.
+Uses same bad-site scoring as lead_finder (bad_score >= 2).
 """
 from googlesearch import search
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 
-# Narrow (original): fewer, local leads. Broader: 10–20× more opportunities.
+JOBS_FILE = "jobs.csv"
+# Broader queries = more leads (e.g. 10–20×). Add more niches as needed.
 industries = [
     "roofing company Fairfax VA",
     "dentist Chantilly VA",
@@ -17,28 +18,28 @@ industries = [
     "dentist Virginia",
     "landscaping Virginia",
 ]
-
-leads_file = "leads.csv"
 OUTDATED_BUILDERS = ("wixsite", "weebly", "yolasite", "godaddy")
 CTA_WORDS = ("contact", "quote", "call", "book", "schedule")
 
 try:
-    leads = pd.read_csv(leads_file)
+    jobs = pd.read_csv(JOBS_FILE)
 except FileNotFoundError:
-    leads = pd.DataFrame(columns=[
-        "business_name", "email", "website", "industry", "city",
-        "contacted", "replied", "converted",
+    jobs = pd.DataFrame(columns=[
+        "business_name", "website", "email", "industry", "city", "status",
+        "contacted", "replied", "converted", "contacted_at", "follow_up_1_sent", "follow_up_2_sent",
     ])
 
-for col in ("contacted", "replied", "converted"):
-    if col not in leads.columns:
-        leads[col] = 0
-for col in ("contacted_at", "follow_up_1_sent", "follow_up_2_sent"):
-    if col not in leads.columns:
-        leads[col] = "" if col == "contacted_at" else 0
+for col in ("status", "contacted", "replied", "converted", "contacted_at", "follow_up_1_sent", "follow_up_2_sent"):
+    if col not in jobs.columns:
+        jobs[col] = "" if col in ("status", "contacted_at") else 0
+
+existing_urls = set(jobs["website"].dropna().astype(str))
+added = 0
 
 for query in industries:
     for url in search(query, num_results=10):
+        if url in existing_urls:
+            continue
         try:
             r = requests.get(url, timeout=5)
             r.raise_for_status()
@@ -47,23 +48,22 @@ for query in industries:
             url_lower = r.url.lower()
             html_lower = r.text.lower()
 
-            # Bad-site score: only add lead if >= 2 signals
             no_ssl = not r.url.startswith("https://")
             no_mobile = soup.find("meta", attrs={"name": "viewport"}) is None
             no_cta = not any(w in text_lower for w in CTA_WORDS)
             outdated_builder = any(b in url_lower or b in html_lower for b in OUTDATED_BUILDERS)
-
             bad_score = sum([no_ssl, no_mobile, no_cta, outdated_builder])
             if bad_score < 2:
                 continue
 
             title = soup.title.string if soup.title else "Unknown"
-            new_lead = {
+            new_job = {
                 "business_name": title[:40].strip(),
-                "email": "",
                 "website": r.url,
+                "email": "",
                 "industry": query.split()[0],
                 "city": query.split()[-2],
+                "status": "NEW_LEAD",
                 "contacted": 0,
                 "replied": 0,
                 "converted": 0,
@@ -71,11 +71,11 @@ for query in industries:
                 "follow_up_1_sent": 0,
                 "follow_up_2_sent": 0,
             }
-            leads = pd.concat([leads, pd.DataFrame([new_lead])], ignore_index=True)
-
+            jobs = pd.concat([jobs, pd.DataFrame([new_job])], ignore_index=True)
+            existing_urls.add(r.url)
+            added += 1
         except Exception:
             continue
 
-leads.drop_duplicates(subset=["website"], inplace=True)
-leads.to_csv(leads_file, index=False)
-print("New leads added (bad_score >= 2).")
+jobs.to_csv(JOBS_FILE, index=False)
+print(f"Lead worker: added {added} jobs (NEW_LEAD).")

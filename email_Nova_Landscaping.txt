@@ -1,10 +1,12 @@
-Subject: Free Website Redesign Demo for Nova Landscaping!
+Subject: Quick Website Redesign Demo for Nova Landscaping
 
 Hi [Name],
 
-I hope you’re doing well! I’ve been checking out Nova Landscaping and I think your site could shine even brighter. I’d love to offer you a free demo for a website redesign that highlights your amazing work. If you're interested, let me know a good time to chat!
+I hope this message finds you well! I recently took a look at Nova Landscaping’s website and created a quick demo redesign that I’d love to share with you. You can check it out here: [Demo Link](https://pranavkode.github.io/aiab/demos/Nova_Landscaping_demo.html). 
+
+Let me know your thoughts!
 
 Best,  
 [Your Name]  
-[Your Company]  
+[Your Position]  
 [Your Contact Information]  

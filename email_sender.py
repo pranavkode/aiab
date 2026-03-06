@@ -1,5 +1,5 @@
 """
-Send generated outreach emails to leads. Marks leads as contacted so we don't re-send.
+Send generated outreach emails to leads. Marks leads as contacted and sets contacted_at.
 Uses a delay between emails (~80/hour) to reduce spam risk.
 """
 from dotenv import load_dotenv
@@ -10,9 +10,13 @@ import time
 import smtplib
 import pandas as pd
 from email.mime.text import MIMEText
+from datetime import datetime, timezone
 
 EMAIL = os.getenv("OUTREACH_EMAIL")
 PASSWORD = os.getenv("OUTREACH_PASSWORD")
+# Cap emails per run (default 10). Set MAX_EMAILS_PER_RUN in .env to change; 0 = no limit.
+_max = os.getenv("MAX_EMAILS_PER_RUN", "10").strip()
+MAX_EMAILS_PER_RUN = int(_max) if _max and _max != "0" else None
 
 if not EMAIL or not PASSWORD:
     print("Set OUTREACH_EMAIL and OUTREACH_PASSWORD in .env (use Gmail App Password if 2FA is on).")
@@ -21,9 +25,12 @@ if not EMAIL or not PASSWORD:
 leads_file = "leads.csv"
 leads = pd.read_csv(leads_file)
 
-# Track contacted so we don't send twice
-if "contacted" not in leads.columns:
-    leads["contacted"] = 0
+for col in ("contacted", "replied", "converted"):
+    if col not in leads.columns:
+        leads[col] = 0
+if "contacted_at" not in leads.columns:
+    leads["contacted_at"] = ""
+
 leads["contacted"] = leads["contacted"].fillna(0).astype(int)
 
 server = smtplib.SMTP("smtp.gmail.com", 587)
@@ -32,6 +39,9 @@ server.login(EMAIL, PASSWORD)
 
 sent = 0
 for index, row in leads.iterrows():
+    if MAX_EMAILS_PER_RUN is not None and sent >= MAX_EMAILS_PER_RUN:
+        print(f"(Stopping at {MAX_EMAILS_PER_RUN} emails this run. Set MAX_EMAILS_PER_RUN in .env to change.)")
+        break
     business = row["business_name"]
     to_email = row["email"]
 
@@ -48,13 +58,14 @@ for index, row in leads.iterrows():
         message = f.read()
 
     msg = MIMEText(message)
-    msg["Subject"] = "Quick website idea"
+    msg["Subject"] = f"Quick idea for {business}'s site"
     msg["From"] = EMAIL
     msg["To"] = to_email
 
     try:
         server.sendmail(EMAIL, to_email, msg.as_string())
         leads.at[index, "contacted"] = 1
+        leads.at[index, "contacted_at"] = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         sent += 1
         print(f"Sent to {business} ({to_email})")
     except Exception as e:

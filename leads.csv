@@ -1,4 +1,4 @@
-business_name,email,website,industry,city
-Fairfax Roofing,info@fairfaxroofing.com,https://fairfaxroofing.com,roofing,Fairfax
-Chantilly Dental,contact@chantillydental.com,https://chantillydental.com,dentist,Chantilly
-Nova Landscaping,info@novalandscaping.com,https://novalandscaping.com,landscaping,Herndon
+business_name,email,website,industry,city,contacted,replied,converted,contacted_at,follow_up_1_sent,follow_up_2_sent
+Fairfax Roofing,info@fairfaxroofing.com,https://fairfaxroofing.com,roofing,Fairfax,0,0,0,,0,0
+Chantilly Dental,contact@chantillydental.com,https://chantillydental.com,dentist,Chantilly,0,0,0,,0,0
+Nova Landscaping,info@novalandscaping.com,https://novalandscaping.com,landscaping,Herndon,0,0,0,,0,0
